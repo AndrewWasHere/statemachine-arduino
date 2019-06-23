@@ -8,19 +8,20 @@
 
 namespace statemachine
 {
-    State::State(char const * const name, State * const parent) :
+    State::State(char const * name, State * parent) :
         m_name(name),
         m_active_state(nullptr),
         m_parent_state(parent)
     {}
 
-    void State::transition_to_state(State * const state)
+    void State::transition_to_state(State * state)
     {
         State * s = active_state();
         State * common_parent = s->find_common_parent(state);
 
         if (!common_parent)
         {
+            // Destination state does not exist in state machine.
             throw BadStateException(state->m_name);
         }
 
@@ -31,6 +32,7 @@ namespace statemachine
         }
 
         // Update active state pointers from common parent to `state`.
+        state->m_active_state = nullptr;
         for (s = state; s != common_parent; s = s->m_parent_state)
         {
             s->m_parent_state->m_active_state = s;
@@ -41,15 +43,39 @@ namespace statemachine
         {
             s->on_entry();
         }
+
+        state->on_initialize();
+    }
+
+    void State::transition_to_history(State * state)
+    {
+        // Follow new state's active state history down one sub-state.
+        if (state->m_active_state) 
+        {
+            state = state->m_active_state;
+        }
+        transition_to_state(state);
+    }
+
+    void State::transition_to_deep_history(State * state)
+    {
+        // Follow new state's active state history all the way down.
+        while (state->m_active_state)
+        {
+            state = state->m_active_state;
+        }
+        transition_to_state(state);
     }
 
     void State::handle_event(Event & event)
     {
-        for (
+        for 
+        (
             State * s = active_state(); 
             s and s->on_event(event); 
             s = s->m_parent_state
         )
+            // Event handled in for loop parameters.
             ;
     }
 
@@ -61,8 +87,8 @@ namespace statemachine
     State * State::active_state()
     {
         State * s = this;
-        while (this->m_active_state) {
-            s = this->m_active_state;
+        while (s->m_active_state) {
+            s = s->m_active_state;
         }
 
         return s;
@@ -71,11 +97,11 @@ namespace statemachine
     /*
         Find the common parent with `rhs`.
      */
-    State * State::find_common_parent(State * const rhs)
+    State * State::find_common_parent(State * other)
     {
         for (State * l = this; l; l = l->m_parent_state)
         {
-            for (State * r = rhs; r; r = r->m_parent_state)
+            for (State * r = other; r; r = r->m_parent_state)
             {
                 if (r == l)
                 {
@@ -88,5 +114,4 @@ namespace statemachine
         // No common parent.
         return nullptr;
     }
-
 }

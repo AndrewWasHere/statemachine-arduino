@@ -8,4 +8,4 @@ add_subdirectory(statemachine)
 add_subdirectory(test)
 
 # Sample state machine implementation.
-add_subdirectory(elevator)
+#add_subdirectory(elevator)
