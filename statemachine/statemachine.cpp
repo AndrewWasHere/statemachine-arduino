@@ -69,14 +69,21 @@ namespace statemachine
 
     void State::handle_event(Event & event)
     {
-        for 
+        bool handled = false;
+
+        for
         (
-            State * s = active_state(); 
-            s and s->on_event(event); 
+            State * s = active_state();
+            s and !(handled = s->on_event(event));
             s = s->m_parent_state
         )
             // Event handled in for loop parameters.
             ;
+
+        if (!handled)
+        {
+            throw EventNotHandledException(event.m_name);
+        }
     }
 
     char const * const State::active_state_name()
@@ -94,9 +101,17 @@ namespace statemachine
         return s;
     }
 
-    /*
-        Find the common parent with `rhs`.
-     */
+    void State::on_initialize() {}
+
+    void State::on_entry() {}
+
+    void State::on_exit() {}
+
+    bool State::on_event(Event & event)
+    {
+        throw EventNotHandledException(event.m_name);
+    }
+
     State * State::find_common_parent(State * other)
     {
         for (State * l = this; l; l = l->m_parent_state)

@@ -9,6 +9,7 @@
 #include "test_transition_to_state.h"
 #include "test_transition_to_history.h"
 #include "test_transition_to_deep_history.h"
+#include "test_handle_event.h"
 
 int main()
 {
@@ -29,6 +30,8 @@ int main()
     test_deep_history();
 
     // handle_event() tests.
+    test_handled_event();
+    test_unhandled_event();
 
     std::cout << "Tests complete." << std::endl;
     

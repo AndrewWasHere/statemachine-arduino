@@ -48,9 +48,13 @@ namespace statemachine
     class Event
     {
     public:
-        Event() : m_name(nullptr) {}
-        explicit Event(char const * name) : m_name(name) {}
+        Event(int const id, char const * name) :
+            m_id(id),
+            m_name(name)
+        {}
+        virtual ~Event() = default;
 
+        int const m_id;
         char const * m_name;
     };
 
@@ -67,6 +71,7 @@ namespace statemachine
          * Otherwise, pass the parent state as the `parent` argument.
          */
         State(char const * name, State * parent);
+        virtual ~State() = default;
 
         /*
          * Transition to new state.
@@ -99,23 +104,24 @@ namespace statemachine
          * Override this function to provide state initialization
          * functionality (black dot transition).
          */
-        virtual void on_initialize() {}
+        virtual void on_initialize();
 
         /*
          * Override this function to provide functionality for whenever your
          * derived state is entered via a `transition_to_state` call.
          */
-        virtual void on_entry() {}
+        virtual void on_entry();
 
         /*
          * Override this function to provide functionality for whenever your
          * derived state is exited via a `transition_to_state` call.
          */
-        virtual void on_exit() {}
+        virtual void on_exit();
 
         /*
          * Overload this function to process specific events. Override this
-         * function if you want to handle generic events.
+         * function to determine the event type and call `on_event` with the
+         * proper event type. See the example for a sample implementation.
          *
          * Either way, return `true` if the event was processed. Return `false`
          * if it was not, so the parent state can get a shot.
@@ -123,10 +129,7 @@ namespace statemachine
          * Your machine's derived state machine class should override this
          * function and return `true`.
          */
-        virtual bool on_event(Event const & event)
-        {
-            throw EventNotHandledException(event.m_name);
-        }
+        virtual bool on_event(Event & event);
 
         /*
          * Returns the current active state.
