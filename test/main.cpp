@@ -14,6 +14,7 @@
 int main()
 {
     std::cout << "Starting statemachine tests..." << std::endl;
+
     // Constructor tests.
     test_state_construction();
 

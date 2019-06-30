@@ -1,7 +1,8 @@
 # State Machine
 
-Base classes for implementing a finite state machine in C++ with a generic
-test application and example. The library has been tested on Linux, and Arduino
+Base classes for implementing a finite state machine (more specifically, 
+UML state machines](https://en.wikipedia.org/wiki/UML_state_machine) in C++.
+The library has been tested on Linux, and Arduino
 (in a [separate project](https://github.com/AndrewWasHere/pongbot)).
 
 To use the state machine library, drop the state machine source code into your

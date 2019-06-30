@@ -72,7 +72,7 @@ public:
 protected:
     bool on_event(HandledEvent & event) override
     {
-        std::cout << m_name << " processed HandledEvent." << std::endl;
+//        std::cout << m_name << " processed HandledEvent." << std::endl;
         m_event_handled = true;
         return true;
     }
