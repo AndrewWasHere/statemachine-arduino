@@ -25,10 +25,12 @@ void test_transition_to_good_state()
     State child1("child 1", &machine);
     State child2("child 2", &machine);
 
-    machine.transition_to_state(&child1);
+    Result result = machine.transition_to_state(&child1);
 
+    assert(result == OK);
     assert((0 == std::strcmp("child 1", machine.active_state_name())));
 
+    assert(result == OK);
     machine.transition_to_state(&child2);
 
     assert((0 == std::strcmp("child 2", machine.active_state_name())));
@@ -48,29 +50,17 @@ void test_transition_to_bad_state()
     State machine2("machine 2", nullptr);
     State child2("child 2", &machine2);
 
-    bool exception_thrown = false;
-    try
-    {
-        machine1.transition_to_state(&machine2);
-    }
-    catch(BadStateException &)
-    {
-        exception_thrown = true;
-    }
+    Result result = machine1.transition_to_state(&machine2);
 
-    assert(exception_thrown);
+    assert(result == STATE_TRANSITION_FAILED);
 
-    machine1.transition_to_state(&child1);
-    try
-    {
-        machine1.transition_to_state(&child2);
-    }
-    catch(BadStateException &)
-    {
-        exception_thrown = true;
-    }
+    result = machine1.transition_to_state(&child1);
 
-    assert(exception_thrown);
+    assert(result == OK);
+
+    result = machine1.transition_to_state(&child2);
+
+    assert(result == STATE_TRANSITION_FAILED);
 }
 
 /*
@@ -85,8 +75,9 @@ void test_transition_to_state_with_unused_history()
     State child2("child 2", &child1);
 
     child2.active_state_name();  // This is here to quiet the linter about unused variables.
-    machine.transition_to_state(&child1);
+    Result result = machine.transition_to_state(&child1);
 
+    assert(result == OK);
     assert((0 == strcmp("child 1", machine.active_state_name())));
 }
 
@@ -102,8 +93,12 @@ void test_transition_to_state_with_history()
     State child1("child 1", &machine);
     State child2("child 2", &child1);
 
-    machine.transition_to_state(&child2);
+    Result result = machine.transition_to_state(&child2);
+
+    assert(result == OK);
+
     machine.transition_to_state(&child1);
 
+    assert(result == OK);
     assert((0 == strcmp("child 1", machine.active_state_name())));
 }

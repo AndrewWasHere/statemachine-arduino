@@ -6,40 +6,13 @@
  */
 #pragma once
 
-#include <exception>
-
 namespace statemachine
 {
-    /*
-     * State machine error.
-     */
-    class StateMachineException : public std::exception
+    enum Result
     {
-    public:
-        StateMachineException() : m_msg(nullptr) {}
-        explicit StateMachineException(char const * msg) : m_msg(msg) {}
-
-        char const * m_msg;
-    };
-
-    /*
-     * Illegal state transition error.
-     */
-    class BadStateException : public StateMachineException
-    {
-    public:
-        BadStateException() : StateMachineException() {}
-        explicit BadStateException(char const * msg) : StateMachineException(msg) {}
-    };
-
-    /*
-     * Event not handled error.
-     */
-    class EventNotHandledException : public StateMachineException
-    {
-    public:
-        EventNotHandledException() : StateMachineException() {}
-        explicit EventNotHandledException(char const * msg) : StateMachineException(msg) {}
+        OK,
+        STATE_TRANSITION_FAILED,
+        EVENT_NOT_HANDLED
     };
 
     /*
@@ -76,23 +49,23 @@ namespace statemachine
         /*
          * Transition to new state.
          */
-        void transition_to_state(State * state);
+        virtual Result transition_to_state(State * state);
 
         /*
          * Transition to state history.
          */
-        void transition_to_history(State * state);
+        Result transition_to_history(State * state);
 
         /*
             Transition to state's deep history.
          */
-        void transition_to_deep_history(State * state);
+        Result transition_to_deep_history(State * state);
 
         /*
          * Call this from the state machine root class instance to process
          * an event.
          */
-        void handle_event(Event & event);
+        Result handle_event(Event & event);
 
         /*
          * Return the name of the active state.
@@ -104,19 +77,19 @@ namespace statemachine
          * Override this function to provide state initialization
          * functionality (black dot transition).
          */
-        virtual void on_initialize();
+        virtual Result on_initialize();
 
         /*
          * Override this function to provide functionality for whenever your
          * derived state is entered via a `transition_to_state` call.
          */
-        virtual void on_entry();
+        virtual Result on_entry();
 
         /*
          * Override this function to provide functionality for whenever your
          * derived state is exited via a `transition_to_state` call.
          */
-        virtual void on_exit();
+        virtual Result on_exit();
 
         /*
          * Overload this function to process specific events. Override this
@@ -130,6 +103,11 @@ namespace statemachine
          * function and return `true`.
          */
         virtual bool on_event(Event & event);
+
+        /*
+         * Returns the root (machine) state.
+         */
+        State * root_state();
 
         /*
          * Returns the current active state.

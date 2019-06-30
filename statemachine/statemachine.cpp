@@ -14,7 +14,7 @@ namespace statemachine
         m_parent_state(parent)
     {}
 
-    void State::transition_to_state(State * state)
+    Result State::transition_to_state(State * state)
     {
         State * s = active_state();
         State * common_parent = s->find_common_parent(state);
@@ -22,7 +22,7 @@ namespace statemachine
         if (!common_parent)
         {
             // Destination state does not exist in state machine.
-            throw BadStateException(state->m_name);
+            return STATE_TRANSITION_FAILED;
         }
 
         // Call on_exit() from active state to common parent.
@@ -44,30 +44,30 @@ namespace statemachine
             s->on_entry();
         }
 
-        state->on_initialize();
+        return state->on_initialize();
     }
 
-    void State::transition_to_history(State * state)
+    Result State::transition_to_history(State * state)
     {
         // Follow new state's active state history down one sub-state.
         if (state->m_active_state) 
         {
             state = state->m_active_state;
         }
-        transition_to_state(state);
+        return transition_to_state(state);
     }
 
-    void State::transition_to_deep_history(State * state)
+    Result State::transition_to_deep_history(State * state)
     {
         // Follow new state's active state history all the way down.
         while (state->m_active_state)
         {
             state = state->m_active_state;
         }
-        transition_to_state(state);
+        return transition_to_state(state);
     }
 
-    void State::handle_event(Event & event)
+    Result State::handle_event(Event & event)
     {
         bool handled = false;
 
@@ -80,10 +80,7 @@ namespace statemachine
             // Event handled in for loop parameters.
             ;
 
-        if (!handled)
-        {
-            throw EventNotHandledException(event.m_name);
-        }
+        return handled ? OK : EVENT_NOT_HANDLED;
     }
 
     char const * const State::active_state_name()
@@ -91,25 +88,46 @@ namespace statemachine
         return active_state()->m_name;
     }
 
-    State * State::active_state()
+    State * State::root_state()
     {
         State * s = this;
-        while (s->m_active_state) {
+        while (s->m_parent_state)
+        {
+            s = s->m_parent_state;
+        }
+
+        return s;
+    }
+
+    State * State::active_state()
+    {
+        State * s = root_state();
+        while (s->m_active_state) 
+        {
             s = s->m_active_state;
         }
 
         return s;
     }
 
-    void State::on_initialize() {}
+    Result State::on_initialize() 
+    {
+        return OK;
+    }
 
-    void State::on_entry() {}
+    Result State::on_entry() 
+    {
+        return OK;
+    }
 
-    void State::on_exit() {}
+    Result State::on_exit() 
+    {
+        return OK;
+    }
 
     bool State::on_event(Event & event)
     {
-        throw EventNotHandledException(event.m_name);
+        return false;
     }
 
     State * State::find_common_parent(State * other)

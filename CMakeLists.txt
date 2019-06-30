@@ -6,6 +6,3 @@ add_subdirectory(statemachine)
 
 # Test application.
 add_subdirectory(test)
-
-# Sample state machine implementation.
-#add_subdirectory(elevator)

@@ -2,12 +2,15 @@
 
 Base classes for implementing a finite state machine in C++ with a generic
 test application and example. The library has been tested on Linux, and Arduino
-(in a separate project).
+(in a [separate project](https://github.com/AndrewWasHere/pongbot)).
 
 To use the state machine library, drop the state machine source code into your
 project, or grab the directory, and insert an `add_directory()` call and add
 'statemachine' to the appropriate `target_link_libraries()` call in your
 project's CMakeLists.txt.
+
+The state machine library is exception-free, opting, instead, for return codes
+from its interfaces. This is to allow it to compile for Arduino.
 
 ## State Machine
 
@@ -21,14 +24,9 @@ to build the statemachine library for those using CMake.
 The state machine unit tests are in the `test/` directory. They are black box
 tests of the state machine class and do not depend on any test framework.
 
-## Elevator
-
-A sample application in the `elevator/` directory, implementing an elevator 
-simulator to show the state machine library at work.
-
 ## Dependencies
 
-* CMake 3.10 or newer.
+* CMake 3.10 or newer (not required for use, just for building the tests.)
 * C++ Compiler of your choosing.
 
 ## License
