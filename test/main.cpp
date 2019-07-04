@@ -23,6 +23,7 @@ int main()
     test_transition_to_bad_state();
     test_transition_to_state_with_unused_history();
     test_transition_to_state_with_history();
+    test_transition_to_same_state();
 
     // transition_to_history() tests.
     test_history();

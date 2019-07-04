@@ -87,7 +87,7 @@ void test_transition_to_state_with_unused_history()
  */
 void test_transition_to_state_with_history()
 {
-    std::cout << "test_transition-to_state_with_history()..." << std::endl;
+    std::cout << "test_transition_to_state_with_history()..." << std::endl;
 
     State machine("machine", nullptr);
     State child1("child 1", &machine);
@@ -101,4 +101,49 @@ void test_transition_to_state_with_history()
 
     assert(result == OK);
     assert((0 == strcmp("child 1", machine.active_state_name())));
+}
+
+class SameStateTestState : public State
+{
+public:
+    SameStateTestState(char const * name, State * parent) :
+        State(name, parent),
+        on_entry_calls(0),
+        on_exit_calls(0)
+    {}
+
+    Result on_entry() override
+    {
+        ++on_entry_calls;
+        return OK;
+    }
+
+    Result on_exit() override
+    {
+        ++on_exit_calls;
+        return OK;
+    }
+
+    size_t on_entry_calls;
+    size_t on_exit_calls;
+};
+
+void test_transition_to_same_state()
+{
+    std::cout << "test_transition_to_same_state()..." << std::endl;
+
+    SameStateTestState machine("machine", nullptr);
+    SameStateTestState child("child", &machine);
+
+    Result result = machine.transition_to_state(&child);
+
+    assert(result == OK);
+    assert(child.on_entry_calls == 1);
+    assert(child.on_exit_calls == 0);
+
+    result = machine.transition_to_state(&child);
+
+    assert(result == OK);
+    assert(child.on_entry_calls == 2);
+    assert(child.on_exit_calls == 1);
 }

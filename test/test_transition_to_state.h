@@ -10,3 +10,4 @@ void test_transition_to_good_state();
 void test_transition_to_bad_state();
 void test_transition_to_state_with_unused_history();
 void test_transition_to_state_with_history();
+void test_transition_to_same_state();
