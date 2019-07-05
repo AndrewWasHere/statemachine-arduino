@@ -1,17 +1,18 @@
-# State Machine
+# State Machine Library
 
 Base classes for implementing a finite state machine (more specifically, 
-UML state machines](https://en.wikipedia.org/wiki/UML_state_machine) in C++.
-The library has been tested on Linux, and Arduino
-(in a [separate project](https://github.com/AndrewWasHere/pongbot)).
+UML state machines](https://en.wikipedia.org/wiki/UML_state_machine) in C++
+targeting Arduino. The library test functions have been tested on Linux, and 
+an example using the state machine library has been implemented for Arduino
+(in a [separate project repository](https://github.com/AndrewWasHere/pongbot)).
 
 To use the state machine library, drop the state machine source code into your
 project, or grab the directory, and insert an `add_directory()` call and add
 'statemachine' to the appropriate `target_link_libraries()` call in your
-project's CMakeLists.txt.
+project's CMakeLists.txt if you're using CMake.
 
 The state machine library is exception-free, opting, instead, for return codes
-from its interfaces. This is to allow it to compile for Arduino.
+from its interfaces.
 
 ## State Machine
 
