@@ -106,7 +106,7 @@ void test_handled_event()
     TestState s("s", &machine);
     HandledEvent e;
 
-    machine.transition_to_state(&s);
+    machine.transition_to_state(s);
     machine.handle_event(e);
 
     assert(s.m_event_handled);
@@ -121,7 +121,7 @@ void test_unhandled_event()
     TestState s("s", &machine);
     UnhandledEvent e;
 
-    machine.transition_to_state(&s);
+    machine.transition_to_state(s);
     machine.handle_event(e);
 
     assert(!s.m_event_handled);

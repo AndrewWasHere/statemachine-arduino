@@ -78,7 +78,7 @@ namespace statemachine
          *
          * @return result code. OK => success.
          */
-        virtual Result transition_to_state(State * state);
+        virtual Result transition_to_state(State & state);
 
         /**
          * Transition to state history.
@@ -90,7 +90,7 @@ namespace statemachine
          *
          * @return result code. OK => success.
          */
-        Result transition_to_history(State * state);
+        Result transition_to_history(State & state);
 
         /*
             Transition to state's deep history.
@@ -105,7 +105,7 @@ namespace statemachine
          *
          * @return result code. OK => success.
          */
-        Result transition_to_deep_history(State * state);
+        Result transition_to_deep_history(State & state);
 
         /**
          * Process event.

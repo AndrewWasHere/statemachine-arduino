@@ -25,33 +25,33 @@ void test_deep_history()
     State d2("d2", &c2);
     State e1("e1", &d2);
 
-    Result result = machine.transition_to_state(&c1);
+    Result result = machine.transition_to_state(c1);
 
     assert(result == OK);
     assert((0 == std::strcmp("c1", machine.active_state_name())));
 
     // Deep history transition to a state with no history.
-    result = machine.transition_to_deep_history(&c2);
+    result = machine.transition_to_deep_history(c2);
 
     assert(result == OK);
     assert((0 == std::strcmp("c2", machine.active_state_name())));
 
-    machine.transition_to_state(&d1);
-    result = machine.transition_to_deep_history(&c2);
+    machine.transition_to_state(d1);
+    result = machine.transition_to_deep_history(c2);
 
     // Deep history transition to a state with shallow history.
     assert(result == OK);
     assert((0 == std::strcmp("d1", machine.active_state_name())));
 
-    machine.transition_to_state(&c1);
-    result = machine.transition_to_deep_history(&c2);
+    machine.transition_to_state(c1);
+    result = machine.transition_to_deep_history(c2);
 
     assert(result == OK);
     assert((0 == std::strcmp("d1", machine.active_state_name())));
 
     // Deep history transition to a state with deep history.
-    machine.transition_to_state(&e1);
-    result = machine.transition_to_deep_history(&c2);
+    machine.transition_to_state(e1);
+    result = machine.transition_to_deep_history(c2);
 
     assert(result == OK);
     assert((0 == std::strcmp("e1", machine.active_state_name())));

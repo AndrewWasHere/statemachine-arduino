@@ -29,13 +29,13 @@ State child("child", &machine);
 Result InitializeTestState::on_initialize()
 {
     ++on_initialize_called;
-    transition_to_state(&child);
+    transition_to_state(child);
     return OK;
 }
 
 void test_initialize_machine()
 {
-    machine.transition_to_state(&machine);
+    machine.transition_to_state(machine);
 
     assert(0 == std::strcmp("child", machine.active_state_name()));
 }
