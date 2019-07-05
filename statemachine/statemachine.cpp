@@ -8,6 +8,11 @@
 
 namespace statemachine
 {
+    Event::Event(int const id, char const * name) :
+        m_id(id),
+        m_name(name)
+    {}
+
     State::State(char const * name, State * parent) :
         m_name(name),
         m_active_state(nullptr),
@@ -134,6 +139,7 @@ namespace statemachine
     {
         if (!other)
         {
+            // `other` is not a valid pointer.
             return nullptr;
         }
 
@@ -143,12 +149,15 @@ namespace statemachine
             other->m_parent_state == nullptr
         )
         {
-            // Current state and other state are the root machine state.
+            // This state and `other` state are the root machine state.
             return this;
         }
 
+        // States for comparison are this state all the way to the root state
+        // machine state.
         for (State * l = this; l; l = l->m_parent_state)
         {
+            // Compare parents of `other` to `l`.
             for
             (
                 State * r = other->m_parent_state;

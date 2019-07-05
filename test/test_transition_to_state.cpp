@@ -140,10 +140,12 @@ void test_transition_to_same_state()
     assert(result == OK);
     assert(child.on_entry_calls == 1);
     assert(child.on_exit_calls == 0);
+    assert((0 == strcmp("child", machine.active_state_name())));
 
     result = machine.transition_to_state(&child);
 
     assert(result == OK);
     assert(child.on_entry_calls == 2);
     assert(child.on_exit_calls == 1);
+    assert((0 == strcmp("child", machine.active_state_name())));
 }
